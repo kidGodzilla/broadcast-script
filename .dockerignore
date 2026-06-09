@@ -1,0 +1,3 @@
+# The Dockerfile only does FROM <image> and COPYs nothing, so the build needs no
+# context. Ignore everything to keep builds fast and avoid shipping repo files.
+*
