@@ -1,0 +1,9 @@
+# Two process types, both from the same image and config — this is how Dokku
+# runs the Rails web server AND the background job worker natively.
+#   dokku ps:scale broadcast web=1 worker=1
+#
+# web: serve plain HTTP on Dokku's $PORT (Dokku/nginx terminates TLS in front).
+#      Bind 0.0.0.0 so the container is reachable. Falls back to 3000 locally.
+# worker: the Solid Queue job runner (equivalent to the compose `job` service).
+web: bin/rails server -b 0.0.0.0 -p ${PORT:-3000}
+worker: bin/jobs

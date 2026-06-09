@@ -1,0 +1,4 @@
+# Never commit real secrets or DB data if you track this dir in your own deploy repo.
+postgres/.env
+postgres/backups/
+broadcast.env
