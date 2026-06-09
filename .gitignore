@@ -1,4 +1,5 @@
 .env
+.env.production
 .license
 docker-compose.override.yml
 .domain

@@ -7,8 +7,6 @@ a whole dedicated Ubuntu server.
 
 **→ See [DOKKU.md](DOKKU.md) for the full setup guide.**
 
-This repo is public. It contains **no secrets** — the license key, registry
-credentials, and app config all live in `dokku config` on your server, never in git.
 
 ## What's here
 

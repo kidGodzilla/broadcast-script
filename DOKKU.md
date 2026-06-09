@@ -54,9 +54,12 @@ SQL
 dokku apps:create broadcast
 dokku postgres:link broadcast-db broadcast        # joins networks + injects DATABASE_URL
 
-# Persistent storage, shared by both web and worker processes:
+# Persistent storage, shared by both web and worker processes.
+# nobody:nogroup + 777 sidesteps matching the image's runtime uid — sloppy but it
+# always works regardless of which user the container runs as:
 mkdir -p /var/lib/dokku/data/storage/broadcast/{storage,uploads}
-chown -R dokku:dokku /var/lib/dokku/data/storage/broadcast
+chown -R nobody:nogroup /var/lib/dokku/data/storage/broadcast
+chmod -R 777 /var/lib/dokku/data/storage/broadcast
 dokku storage:mount broadcast /var/lib/dokku/data/storage/broadcast/storage:/rails/storage
 dokku storage:mount broadcast /var/lib/dokku/data/storage/broadcast/uploads:/rails/uploads
 ```
