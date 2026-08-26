@@ -36,8 +36,9 @@ dokku registry:login <registry_url> <registry_login> <registry_password>
 
 ## 2. Postgres + the three databases
 
-Broadcast is a Rails 8 app using Solid Queue / Cache / Cable, which each want their
-own database. The plugin makes one; create the other two:
+Broadcast is a Rails 8 app whose `config/database.yml` declares three production
+databases — `primary`, `queue` (Solid Queue), and `cable` (Solid Cable). Solid
+Cache is not among them. The plugin makes one database; create the three:
 
 ```bash
 dokku postgres:create broadcast-db
@@ -62,6 +63,16 @@ chown -R nobody:nogroup /var/lib/dokku/data/storage/broadcast
 chmod -R 777 /var/lib/dokku/data/storage/broadcast
 dokku storage:mount broadcast /var/lib/dokku/data/storage/broadcast/storage:/rails/storage
 dokku storage:mount broadcast /var/lib/dokku/data/storage/broadcast/uploads:/rails/uploads
+
+# File descriptors. Docker starts containers at soft nofile 1024 no matter how high
+# the host's limits are — raising DefaultLimitNOFILE or the docker unit's LimitNOFILE
+# lifts the *hard* ceiling only, so containers still get 1024 soft unless you ask.
+# Upstream shipped this in compose after a customer outage: ~65 webhooks/s exhausted
+# the descriptors, Puma logged Errno::EMFILE, and the site served 502s for 31 minutes
+# while every health signal still read green. Verify with:
+#   docker inspect -f '{{.State.Pid}}' <container>  # then grep 'Max open files' /proc/<pid>/limits
+dokku docker-options:add broadcast deploy '--ulimit nofile=65536:65536'
+dokku docker-options:add broadcast run '--ulimit nofile=65536:65536'
 ```
 
 ## 4. Configuration
@@ -74,6 +85,8 @@ service (`dokku postgres:info broadcast-db`) and set everything:
 dokku config:set --no-restart broadcast \
   RAILS_ENV=production \
   SECRET_KEY_BASE="$(openssl rand -hex 64)" \
+  BINDING=0.0.0.0 \
+  PORT=3000 \
   DATABASE_HOST=dokku-postgres-broadcast-db \
   DATABASE_USERNAME=postgres \
   DATABASE_PASSWORD='<from postgres:info>' \
@@ -87,8 +100,14 @@ dokku config:set --no-restart broadcast \
 Notes:
 - **Save the three encryption keys.** Lose them and you lose every encrypted column
   (API keys, etc.). The official installer auto-generates these; here you own them.
+- `BINDING`/`PORT` are how the web process gets its bind address, and they are not
+  optional. The [`Procfile`](Procfile) must end in exactly `bin/rails server` for
+  the image's entrypoint to run `db:prepare` and its `solid_cable_messages` repair,
+  so the usual `-b 0.0.0.0 -p $PORT` flags cannot be used — Rails reads both from
+  the environment instead. Pair with `dokku ports:set <app> http:80:3000`.
 - `TLS_DOMAIN` is used for link generation / host auth even though Dokku (not the
-  app) serves TLS.
+  app) serves TLS. Keep the Procfile off the image's default `thrust` CMD: Thruster
+  reads `TLS_DOMAIN` and would start its own ACME listener on 80/443, fighting nginx.
 - Don't set `BROADCAST_MANAGED` or `STORAGE_PATH` — those drive the managed host
   features and the app's built-in TLS, both bypassed here.
 
@@ -109,18 +128,30 @@ DB migrations run automatically on each deploy via the `predeploy` hook in
 dokku domains:set broadcast broadcast.example.com
 ```
 
-TLS is yours to wire up however you already do it (e.g. `dokku certs:add` with your
-cert, Dokku global certs, or an upstream proxy / Cloudflare).
+TLS is yours to wire up however you already do it. The two common paths are
+mutually exclusive in one important way — **they need opposite DNS settings**, so
+pick before you create the record:
 
-> **Optional — automatic TLS via Let's Encrypt.** If you don't already have certs
-> and just want Dokku to handle them, install the plugin and enable it:
-> ```bash
-> sudo dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
-> dokku letsencrypt:set broadcast email you@example.com
-> dokku letsencrypt:enable broadcast
-> dokku letsencrypt:cron-job --add        # auto-renew
-> ```
-> Requires the domain's DNS to already point at the Dokku host (port 80 reachable).
+**A. Behind a proxying CDN (Cloudflare orange-cloud, Fastly, etc.)** — install an
+origin certificate and let the CDN terminate TLS at its edge:
+```bash
+dokku certs:add broadcast < origin-cert-and-key.tar
+```
+The DNS record must be **proxied**. Origin certs are trusted only by the CDN, so a
+DNS-only record makes browsers hit the origin directly and see an untrusted cert.
+Wildcard origin certs cover every subdomain at once and last years, so there is no
+renewal cron to forget.
+
+**B. Let's Encrypt, direct to the host** — only when nothing proxies in front:
+```bash
+sudo dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
+dokku letsencrypt:set broadcast email you@example.com
+dokku letsencrypt:enable broadcast
+dokku letsencrypt:cron-job --add        # auto-renew, every 90 days
+```
+The HTTP-01 challenge needs port 80 to reach *this* host, so the record must be
+**DNS-only**. Enabling this behind a proxy fails the challenge; turning the proxy
+off to satisfy it silently gives up whatever the CDN was providing.
 
 If routing 502s, check the container port Dokku detected and map it:
 
