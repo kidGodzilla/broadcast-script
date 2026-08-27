@@ -1,0 +1,13 @@
+{
+  "domains": [
+    "broadcast.meetingroom365.com"
+  ],
+  "scale": {
+    "web": 1,
+    "worker": 0
+  },
+  "storage": [
+    "/var/lib/dokku/data/storage/broadcast/uploads:/rails/uploads",
+    "/var/lib/dokku/data/storage/broadcast/storage:/rails/storage"
+  ]
+}
