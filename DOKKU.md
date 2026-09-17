@@ -34,20 +34,30 @@ Dokku builds with the host Docker daemon, so the build-time `FROM` pull needs:
 dokku registry:login <registry_url> <registry_login> <registry_password>
 ```
 
-## 2. Postgres + the three databases
+## 2. Postgres + the queue and cable databases
 
 Broadcast is a Rails 8 app whose `config/database.yml` declares three production
 databases — `primary`, `queue` (Solid Queue), and `cable` (Solid Cable). Solid
-Cache is not among them. The plugin makes one database; create the three:
+Cache is not among them.
+
+Only two of them need creating. `postgres:link` (step 3) injects `DATABASE_URL`,
+Rails merges that into the `primary` entry, and primary therefore lands in the
+plugin's own database — `broadcast_db`. The `broadcast_primary_production` named
+in `database.yml` is overridden and never used, so don't create it and don't go
+looking for it.
 
 ```bash
 dokku postgres:create broadcast-db
 dokku postgres:connect broadcast-db <<'SQL'
-CREATE DATABASE broadcast_primary_production;
 CREATE DATABASE broadcast_queue_production;
 CREATE DATABASE broadcast_cable_production;
 SQL
 ```
+
+This matters for backups. `broadcast_db` holds subscribers, broadcasts, users —
+everything you cannot regenerate — and it is exactly what `dokku postgres:export
+broadcast-db` dumps, so the plugin's default export is the backup you want. Queue
+and cable hold job and cable rows and can be rebuilt.
 
 ## 3. Create the app
 
@@ -77,9 +87,10 @@ dokku docker-options:add broadcast run '--ulimit nofile=65536:65536'
 
 ## 4. Configuration
 
-Broadcast wants `DATABASE_HOST/USERNAME/PASSWORD` (it derives the three db names
-itself), not the `DATABASE_URL` the plugin injects. Pull the values from the linked
-service (`dokku postgres:info broadcast-db`) and set everything:
+Broadcast reads `DATABASE_HOST/USERNAME/PASSWORD` to reach the `queue` and `cable`
+databases; the `DATABASE_URL` that `postgres:link` already injected is what points
+`primary` at `broadcast_db`. Leave that variable alone and add the rest — the values
+come from `dokku postgres:info broadcast-db`:
 
 ```bash
 dokku config:set --no-restart broadcast \
