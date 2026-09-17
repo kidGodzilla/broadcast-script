@@ -1,0 +1,141 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <title>Confirm your subscription</title>
+  <!--[if !mso]><!-- -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!--<![endif]-->
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <style type="text/css">
+    #outlook a { padding: 0; }
+    .ReadMsgBody { width: 100%; }
+    .ExternalClass { width: 100%; }
+    .ExternalClass * { line-height: 100%; }
+    body { margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+    p { display: block; margin: 13px 0; }
+    a { color: #212841; }
+  </style>
+  <!--[if mso]>
+  <xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
+  <![endif]-->
+  <!--[if lte mso 11]>
+  <style type="text/css">.outlook-group-fix { width:100% !important; }</style>
+  <![endif]-->
+  <style type="text/css">
+    @media only screen and (max-width:480px) {
+      .mobile-full { width: 100% !important; max-width: 100% !important; }
+      .mobile-pad { padding-left: 20px !important; padding-right: 20px !important; }
+      .mobile-h1 { font-size: 26px !important; line-height: 1.25 !important; }
+      .mobile-btn { display: block !important; width: 100% !important; }
+    }
+  </style>
+</head>
+
+<body style="background-color:#EDF2F9;">
+<div style="display:none;font-size:1px;color:#EDF2F9;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">One click to confirm your subscription &mdash; then you're all set.</div>
+<div style="background-color:#EDF2F9;">
+
+  <!-- ============ HEADER ============ -->
+  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" bgcolor="#212841" style="background:#212841;background-color:#212841;width:100%;">
+    <tbody><tr><td>
+      <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" style="width:600px;" width="600"><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+      <div style="Margin:0px auto;max-width:600px;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+          <tbody><tr>
+            <td align="center" style="direction:ltr;font-size:0px;padding:28px 0 24px 0;text-align:center;vertical-align:top;">
+              <a href="https://www.meetingroom365.com" target="_blank" style="text-decoration:none;">
+                <img alt="Meeting Room 365" height="31" src="https://www.meetingroom365.com/mr365-logo-white.png" style="border:0;display:block;outline:none;text-decoration:none;height:31px;width:200px;margin:0 auto;" width="200">
+              </a>
+            </td>
+          </tr></tbody>
+        </table>
+      </div>
+      <!--[if mso | IE]></td></tr></table><![endif]-->
+    </td></tr></tbody>
+  </table>
+
+  <!-- ============ BODY CARD ============ -->
+  <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" style="width:600px;" width="600"><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+  <div class="body-section" style="box-shadow: 0 25px 50px rgba(8,21,66,.06); Margin: 0px auto; max-width: 600px;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" bgcolor="#ffffff" style="background:#ffffff;background-color:#ffffff;width:100%;">
+      <tbody>
+
+      <tr>
+        <td class="mobile-pad" style="padding:40px 40px 0 40px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;">
+          <h1 class="mobile-h1" style="margin:0 0 16px 0;font-size:32px;font-weight:500;line-height:1.25;color:#111827;">Confirm your subscription</h1>
+          <div style="font-size:16px;font-weight:400;line-height:26px;color:#334155;">
+            Hi {{ first_name | default: "there" }},<br><br>
+            Please confirm that you want to receive email from Meeting Room 365 at <strong style="color:#111827;">{{ email }}</strong>. One click and you're on the list.
+          </div>
+        </td>
+      </tr>
+
+      <!-- ===== CONFIRM BUTTON ===== -->
+      <tr>
+        <td class="mobile-pad" align="left" style="padding:28px 40px 0 40px;">
+          <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
+            <tr>
+              <td align="center" bgcolor="#212841" role="presentation" style="border:1px solid #212841;border-radius:8px;cursor:auto;padding:14px 26px;background:#212841;" valign="middle">
+                <a class="mobile-btn" href="{{ confirmation_url }}" target="_blank" style="background:#212841;color:#ffffff;-webkit-text-fill-color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:17px;font-weight:700;letter-spacing:0.01em;line-height:120%;Margin:0;text-decoration:none;display:inline-block;text-shadow:0 1px 0 rgba(0,0,0,0.18);">
+                  <span style="color:#ffffff;-webkit-text-fill-color:#ffffff;">Confirm subscription</span>
+                </a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- ===== PLAIN-URL FALLBACK ===== -->
+      <tr>
+        <td class="mobile-pad" style="padding:26px 40px 0 40px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:21px;color:#64748B;">
+          If the button doesn't work, paste this link into your browser:<br>
+          <a href="{{ confirmation_url }}" target="_blank" style="color:#4f46e5;text-decoration:underline;word-break:break-all;">{{ confirmation_url }}</a>
+        </td>
+      </tr>
+
+      <!-- ===== DIVIDER + DISCLAIMER ===== -->
+      <tr><td class="mobile-pad" style="padding:28px 40px 0 40px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tr><td style="border-top:1px solid #E2E8F0;font-size:0;line-height:0;">&nbsp;</td></tr></table></td></tr>
+      <tr>
+        <td class="mobile-pad" style="padding:20px 40px 40px 40px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:21px;color:#64748B;">
+          Didn't sign up? You can safely ignore this email &mdash; you won't be subscribed and we won't email you again.
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+  <!--[if mso | IE]></td></tr></table><![endif]-->
+
+  <!-- ============ FOOTER ============ -->
+  <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#EDF2F9;width:100%;">
+    <tbody><tr><td>
+      <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" style="width:600px;" width="600"><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+      <div style="background-color:#EDF2F9;Margin:0px auto;max-width:600px;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#EDF2F9;width:100%;">
+          <tbody>
+          <tr>
+            <td align="center" class="mobile-pad" style="padding:28px 40px 6px 40px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:11px;font-weight:400;line-height:18px;text-align:center;color:#334155;">
+              You received this because someone entered this address on a Meeting Room 365 signup form. We only send email after you confirm.
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:6px 25px 28px 25px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:11px;font-weight:400;line-height:18px;text-align:center;color:#334155;">
+              <a href="https://www.meetingroom365.com" target="_blank" style="color:#334155;text-decoration:underline;">Meeting Room 365</a>
+              &nbsp;&middot;&nbsp;
+              &copy; Meeting Room 365. All Rights Reserved.
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--[if mso | IE]></td></tr></table><![endif]-->
+    </td></tr></tbody>
+  </table>
+
+</div>
+</body>
+</html>
