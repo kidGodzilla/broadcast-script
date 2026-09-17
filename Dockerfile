@@ -9,11 +9,13 @@
 # The real app source lives in the image and is pulled at build time via FROM.
 # Nothing secret is baked in — registry auth happens on the host (see DOKKU.md).
 #
-# Update Broadcast by pulling a newer base image and rebuilding (see DOKKU.md).
-# Pin a specific version (or the arm64 image) by overriding the build arg:
+# Upgrade by bumping the tag below and redeploying (see DOKKU.md). The tag is
+# pinned, not "latest", so a rebuild can never move the app to a release nobody
+# chose — releases carry database migrations, and those do not roll back.
+# Override per-host (e.g. for the arm64 image) with:
 #   dokku docker-options:add broadcast build \
-#     '--build-arg BROADCAST_IMAGE=gitea.hostedapp.org/broadcast/broadcast:1.2.3'
-ARG BROADCAST_IMAGE=gitea.hostedapp.org/broadcast/broadcast:latest
+#     '--build-arg BROADCAST_IMAGE=gitea.hostedapp.org/broadcast/broadcast-arm:2.35.0'
+ARG BROADCAST_IMAGE=gitea.hostedapp.org/broadcast/broadcast:2.35.0
 FROM ${BROADCAST_IMAGE}
 
 # ---------------------------------------------------------------------------
